@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DayGram</string>
+    <string name="diary_drawable_line">Line</string>
+    <string name="diary_text_hint">Enter a text for the diary</string>
+
+    <string name="diaries_title">Diaries</string>
+
+    <string name="delete_diary">Delete</string>
+    <string name="diary_details_save">save</string>
+    <string name="diary_details_home_button">home_button</string>
+    <string name="diary_details_insert_time">insert_time</string>
+    <string name="diary_detials_date">FRIDAY/JULY 13/2016</string>
+</resources>

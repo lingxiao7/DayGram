@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/background_activated"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignParentLeft="true"
+                  android:layout_alignParentStart="true"
+                  android:padding="4dp">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="44dp"
+                android:layout_height="wrap_content"
+                android:text="Sep"
+                android:background="@drawable/textview_bg"
+                android:id="@+id/diary_list_item_day"
+                android:textSize="16sp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:text="29"
+                android:id="@+id/diary_list_item_date"
+                android:background="@drawable/textview_boder"
+                android:textSize="23sp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:gravity="center"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="New Text"
+        android:id="@+id/diary_list_item_title"
+        android:background="@drawable/textview_boder"
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:padding="4dp"/>
+</LinearLayout>
