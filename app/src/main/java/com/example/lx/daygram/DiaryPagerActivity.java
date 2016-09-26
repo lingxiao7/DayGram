@@ -33,7 +33,13 @@ public class DiaryPagerActivity extends FragmentActivity {
             @Override
             public Fragment getItem(int position) {
                 Diary diary = mDiaries.get(position);
-                return DiaryEditFragment.newInstance(diary.getDate());
+                Date date = null;
+                if (diary == null) {
+                    date = (Date) getIntent()
+                            .getSerializableExtra(DiaryEditFragment.EXTRA_DIARY_DATE);
+                }
+                else date = diary.getDate();
+                return DiaryEditFragment.newInstance(date);
                 //return DiaryFragment.newInstance(diary.getDate());
             }
 
@@ -44,7 +50,8 @@ public class DiaryPagerActivity extends FragmentActivity {
         });
 
         Date diaryDate = (Date) getIntent()
-                .getSerializableExtra(DiaryFragment.EXTRA_DIARY_DATE);
+                .getSerializableExtra(DiaryEditFragment.EXTRA_DIARY_DATE);
+
         for (int i = 0; i < mDiaries.size(); i++) {
             if (mDiaries.get(i).getDate().equals(diaryDate)){
                 mViewPager.setCurrentItem(i);
@@ -55,7 +62,10 @@ public class DiaryPagerActivity extends FragmentActivity {
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             public void onPageScrollStateChanged(int state){}
 
-            public void onPageScrolled(int pos, float posOffset, int posOffsetPixels){}
+            public void onPageScrolled(int pos, float posOffset, int posOffsetPixels){
+
+                Diary diary = mDiaries.get(pos);
+            }
 
             public void onPageSelected(int pos) {
                 Diary diary = mDiaries.get(pos);

@@ -1,5 +1,6 @@
 package com.example.lx.daygram;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,12 +35,17 @@ public class DiaryEditFragment extends Fragment {
 
     private int mCursorIndex;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Date diaryDate = (Date)getArguments().getSerializable(EXTRA_DIARY_DATE);
         if (diaryDate != null) {
             mDiary = DiaryLab.get(getActivity()).getDiary(diaryDate);
+            if (mDiary == null) {
+                mDiary = new Diary();
+                mDiary.setDate(diaryDate);
+            }
             return;
         }
     }
@@ -113,7 +119,9 @@ public class DiaryEditFragment extends Fragment {
                 mTextField.setFocusable(false);
                 mTextField.setFocusableInTouchMode(false);
                 if (mTextString != null) mDiary.setText(mTextString);
+                DiaryLab.get(getActivity()).sortDiary();
                 DiaryLab.get(getActivity()).saveDiaries();
+                getActivity().onBackPressed();
             }
         });
         return v;

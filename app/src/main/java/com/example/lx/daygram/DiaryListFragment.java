@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -35,10 +38,11 @@ import java.util.Objects;
 /**
  * Created by lx on 2016/9/23.
  */
-public class DiaryListFragment extends ListFragment {
+public class DiaryListFragment extends ListFragment{
     private static final String TAG = "DiaryListFragment";
 
     private ArrayList<Diary> mDiaries;
+    private ArrayList<DiaryDot> mDots;
     private boolean isNeedSaved;
 
     @Override
@@ -46,12 +50,13 @@ public class DiaryListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.diaries_title);
         mDiaries = DiaryLab.get(getActivity()).getDiaries();
+        mDots = DiaryDotLab.get(getActivity()).getDots();
         isNeedSaved = false;
         /**ArrayAdapter<Diary> adapter =
                 new ArrayAdapter<Diary>(getActivity(),
                         android.R.layout.simple_list_item_1,
                         mDiaries);**/
-        DiaryAdapter adapter = new DiaryAdapter(getActivity(), mDiaries);
+        DiaryAdapter adapter = new DiaryAdapter(getActivity(), mDiaries, mDots);
         setListAdapter(adapter);
     }
 
@@ -92,8 +97,10 @@ public class DiaryListFragment extends ListFragment {
                             DiaryLab diaryLab = DiaryLab.get(getActivity());
                             for (int i = adapter.getCount() - 1; i >= 0; i--)
                                 if (getListView().isItemChecked(i)) {
-                                    diaryLab.deleteCrime(adapter.getItem(i));
-                                    isNeedSaved = true;
+                                    if (adapter.getItem(i) instanceof Diary) {
+                                        diaryLab.deleteDiary((Diary) adapter.getItem(i));
+                                        isNeedSaved = true;
+                                    }
                                 }
                             mode.finish();
                             adapter.notifyDataSetChanged();
@@ -113,28 +120,31 @@ public class DiaryListFragment extends ListFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (isNeedSaved) {
-            isNeedSaved = false;
-            DiaryLab.get(getActivity()).saveDiaries();
-        }
-    }
-
-    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         //super.onListItemClick(l, v, position, id);
-        Diary d = ((DiaryAdapter)getListAdapter()).getItem(position);
-        Log.d(TAG, d.getTitle() + "was clicked");
+        Object o = ((DiaryAdapter)getListAdapter()).getItem(position);
+        if (o instanceof Diary) {
+            Diary d = (Diary)o;
+            Log.d(TAG, d.getTitle() + "was clicked");
 
-        // Start DiaryEditActivity
-        // Intent i = new Intent(getActivity(), DiaryActivity.class);
-        // Start DiaryPagerActivity
-        Intent i = new Intent(getActivity(), DiaryPagerActivity.class);
-        //i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
-        i.putExtra(DiaryFragment.EXTRA_DIARY_DATE, d.getDate());
-        i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
-        startActivity(i);
+            // Start DiaryEditActivity
+            // Intent i = new Intent(getActivity(), DiaryActivity.class);
+            // Start DiaryPagerActivity
+            Intent i = new Intent(getActivity(), DiaryPagerActivity.class);
+            //i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
+            i.putExtra(DiaryFragment.EXTRA_DIARY_DATE, d.getDate());
+            i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
+            startActivity(i);
+        }
+        else {
+            Diary d = new Diary();
+            d.setDate(((DiaryDot) o).getDate());
+            mDiaries.add(d);
+            //DiaryLab.get(getActivity()).addDiary(d);
+            Intent i = new Intent(getActivity(), DiaryPagerActivity.class);
+            i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, ((DiaryDot) o).getDate());
+            startActivity(i);
+        }
     }
 
     private class DiaryAdapter extends BaseAdapter {
@@ -144,41 +154,45 @@ public class DiaryListFragment extends ListFragment {
         //itemB类的type标志
         private static final int TYPE_B = 1;
         private Context mContext = null;
-        private List<Diary> mDiaries = null;
+        //整合数据
+        private List<Object> data = new ArrayList<>();
 
-        public DiaryAdapter(Context context, ArrayList<Diary> diaries) {
-            mContext = context;
-            mDiaries = diaries;
+        public DiaryAdapter(Context context, ArrayList<Diary> diaries, ArrayList<DiaryDot> dots) {
+            this.mContext = context;
+            data.addAll(diaries);
+            data.addAll(dots);
+
+            Collections.sort(data, new MyComparator() );
         }
 
         @Override
         public int getCount() {
             int count = 0;
-            if (null != mDiaries) {
-                count = mDiaries.size();
+            if (null != data) {
+                count = data.size();
             }
             return count;
         }
 
-        public int getItemViewType(String s) {
+        @Override
+        public int getItemViewType(int position) {
             int result = 0;
-            if (s != null) {
+            if (data.get(position) instanceof Diary) {
                 result = TYPE_A;
-            } else{
+            } else {
                 result = TYPE_B;
             }
             return result;
         }
 
         @Override
-        public Diary getItem(int position) {
-            Diary item = null;
+        public int getViewTypeCount() {
+            return 2;
+        }
 
-            if (null != mDiaries) {
-                item = mDiaries.get(position);
-            }
-
-            return item;
+        @Override
+        public Object getItem(int position) {
+            return data.get(position);
         }
 
         @Override
@@ -191,8 +205,7 @@ public class DiaryListFragment extends ListFragment {
             //创建两种不同种类的viewHolder变量
             ViewHolder1 holder1 = null;
             ViewHolder2 holder2 = null;
-            Diary d = getItem(position);
-            int type = getItemViewType(d.getTitle());
+            int type = getItemViewType(position);
 
             if (convertView == null) {
                 //实例化
@@ -221,49 +234,62 @@ public class DiaryListFragment extends ListFragment {
                 //根据不同的type来获得tag
                 switch (type) {
                     case TYPE_B:
-                        /**
-                        if (null == holder2)
-                            holder2 = new ViewHolder2();*/
                         holder2 = (ViewHolder2) convertView.getTag(R.id.tag_second);
                         break;
                     case TYPE_A:
-                        if (null == holder1) {
-                            holder1 = new ViewHolder1();
-                            holder1.dayTextView = (TextView) convertView.findViewById(R.id.diary_list_item_day);
-                            holder1.dateTextView = (TextView) convertView.findViewById(R.id.diary_list_item_date);
-                            holder1.titleTextView = (TextView) convertView.findViewById(R.id.diary_list_item_title);
-                        }
                         holder1 = (ViewHolder1) convertView.getTag(R.id.tag_first);
                         break;
                 }
             }
 
-            d = getItem(position);
+            Object o = data.get(position);
             //根据不同的type设置数据
             switch (type) {
                 case TYPE_B:
-                    //holder2.dotImageView.setImageResource(R.drawable.add_dot_btn);
+                    DiaryDot dot = (DiaryDot) o;
+                    if (("Sunday") == DateFormat.format("EEEE", dot.getDate()).toString())
+                        holder2.dotImageView.setImageResource(R.drawable.add_red_dot_btn);
+                    else holder2.dotImageView.setImageResource(R.drawable.add_dot_btn);
                     break;
                 case TYPE_A:
-                    if (null == holder1) {
-                        holder1 = new ViewHolder1();
-                        holder1.dayTextView = (TextView) convertView.findViewById(R.id.diary_list_item_day);
-                        holder1.dateTextView = (TextView) convertView.findViewById(R.id.diary_list_item_date);
-                        holder1.titleTextView = (TextView) convertView.findViewById(R.id.diary_list_item_title);
-                    }
-                    if (null == holder1.dayTextView)
-                        holder1.dayTextView = (TextView) convertView.findViewById(R.id.diary_list_item_day);
-                    if (null == holder1.dateTextView)
-                        holder1.dateTextView = (TextView) convertView.findViewById(R.id.diary_list_item_date);
-                    if (null == holder1.titleTextView )
-                        holder1.titleTextView = (TextView) convertView.findViewById(R.id.diary_list_item_title);
-                    holder1.dayTextView.setText((String)DateFormat.format("E", d.getDate()));
-                    holder1.dateTextView.setText((String)DateFormat.format("d", d.getDate()));
-                    holder1.titleTextView.setText(d.getTitle());
+                    Diary diary = (Diary)o;
+                    holder1.dayTextView.setText((String)DateFormat.format("E", diary.getDate()));
+                    holder1.dateTextView.setText((String)DateFormat.format("d", diary.getDate()));
+                    holder1.titleTextView.setText(diary.getTitle());
                     break;
             }
 
             return convertView;
+        }
+
+        public class MyComparator implements Comparator {
+
+            public int compare(Object arg0, Object arg1) {
+                //根据不同的情况来进行排序
+
+                if (arg0 instanceof Diary && arg1 instanceof DiaryDot) {
+
+                    Diary a = (Diary) arg0;
+                    DiaryDot b = (DiaryDot) arg1;
+                    return a.getDate().compareTo(b.getDate());
+
+                } else if (arg0 instanceof DiaryDot && arg1 instanceof Diary) {
+
+                    DiaryDot b = (DiaryDot) arg0;
+                    Diary a = (Diary) arg1;
+                    return b.getDate().compareTo(a.getDate());
+                } else if (arg0 instanceof Diary && arg1 instanceof Diary) {
+
+                    Diary a0 = (Diary) arg0;
+                    Diary a1 = (Diary) arg1;
+                    return a0.getDate().compareTo(a1.getDate());
+
+                } else {
+                    DiaryDot b0 = (DiaryDot) arg0;
+                    DiaryDot b1 = (DiaryDot) arg1;
+                    return b0.getDate().compareTo(b1.getDate());
+                }
+            }
         }
 
         private class ViewHolder1 {
@@ -277,6 +303,14 @@ public class DiaryListFragment extends ListFragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isNeedSaved) {
+            isNeedSaved = false;
+            DiaryLab.get(getActivity()).saveDiaries();
+        }
+    }
 
     @Override
     public void onResume() {
@@ -304,12 +338,12 @@ public class DiaryListFragment extends ListFragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int position = info.position;
         DiaryAdapter adapter = (DiaryAdapter)getListAdapter();
-        Diary diary = adapter.getItem(position);
+        Diary diary = (Diary) adapter.getItem(position);
 
         switch (item.getItemId()) {
             case R.id.menu_item_delete_diary:
                 DiaryLab diaryLab =  DiaryLab.get(getActivity());
-                diaryLab.deleteCrime(diary);
+                diaryLab.deleteDiary(diary);
                 diaryLab.saveDiaries();
                 adapter.notifyDataSetChanged();
                 return true;

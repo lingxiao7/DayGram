@@ -4,7 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -13,7 +17,7 @@ import java.util.UUID;
 public class DiaryLab {
     private static final String TAG = "DiaryLab";
     private static final String FIELNAME = "diary.json";
-    private static final String FLELTESTNAME = "diarytest5.json";
+    private static final String FLELTESTNAME = "diarytest8.json";
 
     private ArrayList<Diary> mDiaries;
     private DayGramJSONSerializer mDayGramJSONSerializer;
@@ -31,12 +35,14 @@ public class DiaryLab {
         } catch (Exception e) {
             mDiaries = new ArrayList<Diary>();
             Date todayDate = new Date();
-            for (Date i = new Date(110, 0, 0); i.compareTo(todayDate) < 0; i = new Date(i.getTime() + 24 * 60 * 60 * 1000)){
+            for (Date i = new Date(110, 1, 0); i.compareTo(todayDate) < 0; i = new Date(i.getTime() + 24 * 60 * 60 * 1000)){
                 Diary d = new Diary();
                 d.setDate(i);
                 mDiaries.add(d);
             }
         } finally {
+            if (0 == mDiaries.size()) mDiaries = new ArrayList<Diary>();
+            /**
             if (0 == mDiaries.size()) {
                 //mDiaries = new ArrayList<Diary>();
                 Date todayDate = new Date();
@@ -45,7 +51,19 @@ public class DiaryLab {
                     d.setDate(i);
                     mDiaries.add(d);
                 }
-            }
+            }*/
+        }
+    }
+
+    public void sortDiary() {
+        Collections.sort(mDiaries, new SortByDate());
+    }
+
+    public class SortByDate implements Comparator {
+        public int compare(Object arg0, Object arg1) {
+            Diary a0 = (Diary) arg0;
+            Diary a1 = (Diary) arg1;
+            return a0.getDate().compareTo(a1.getDate());
         }
     }
 
@@ -58,7 +76,7 @@ public class DiaryLab {
         return mDiaries;
     }
 
-    public void deleteCrime(Diary d) {
+    public void deleteDiary(Diary d) {
         mDiaries.remove(d);
     }
 

@@ -1,6 +1,7 @@
 package com.example.lx.daygram;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,11 +16,16 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
 
 /**
  * Created by lx on 2016/9/23.
  */
 public class DayGramJSONSerializer {
+    private static final String TAG = "DayGramJSONSerializer";
+
+
     private Context mContext;
     private String mFileName;
 
@@ -30,6 +36,7 @@ public class DayGramJSONSerializer {
 
     public ArrayList<Diary> loadDiaries() throws IOException, JSONException {
         ArrayList<Diary> diaries = new ArrayList<Diary>();
+        ArrayList<DiaryDot> dots = new ArrayList<DiaryDot>();
         BufferedReader reader = null;
         try {
             //
@@ -45,8 +52,13 @@ public class DayGramJSONSerializer {
             JSONArray array = (JSONArray) new JSONTokener(jsonString.toString())
                     .nextValue();
             //
-            for (int i = 0; i < array.length(); i++)
-                diaries.add(new Diary(array.getJSONObject(i)));
+            for (int i = 0; i < array.length(); i++) {
+                Diary d = new Diary(array.getJSONObject(i));
+                if (d.getText() != null)
+                    diaries.add(new Diary(array.getJSONObject(i)));
+                else
+                    dots.add(new DiaryDot(array.getJSONObject(i)));
+            }
         } catch (FileNotFoundException e) {
             //
         } finally {
@@ -69,6 +81,8 @@ public class DayGramJSONSerializer {
                     .openFileOutput(mFileName, Context.MODE_PRIVATE);
             writer = new OutputStreamWriter(out);
             writer.write(array.toString());
+            Log.d(TAG, "diaries saved to file");
+
         } finally {
             if (writer != null)
                 writer.close();
