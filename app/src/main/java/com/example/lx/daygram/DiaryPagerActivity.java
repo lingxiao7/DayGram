@@ -1,5 +1,6 @@
 package com.example.lx.daygram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,10 +15,16 @@ import java.util.UUID;
 
 /**
  * Created by lx on 2016/9/23.
+ * ViewPager help the app to swipe to replace diary.
  */
-public class DiaryPagerActivity extends FragmentActivity {
+public class DiaryPagerActivity extends FragmentActivity implements DiaryEditFragment.Callbacks{
     private ViewPager mViewPager;
     private ArrayList<Diary> mDiaries;
+
+    @Override
+    public void onSave(Intent data) {
+        setResult(RESULT_OK, data);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,10 +69,7 @@ public class DiaryPagerActivity extends FragmentActivity {
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             public void onPageScrollStateChanged(int state){}
 
-            public void onPageScrolled(int pos, float posOffset, int posOffsetPixels){
-
-                Diary diary = mDiaries.get(pos);
-            }
+            public void onPageScrolled(int pos, float posOffset, int posOffsetPixels){ }
 
             public void onPageSelected(int pos) {
                 Diary diary = mDiaries.get(pos);

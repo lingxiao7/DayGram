@@ -13,11 +13,14 @@ import java.util.UUID;
 
 /**
  * Created by lx on 2016/9/22.
+ * The lab of all diary. Only one static mDiaries is exampled, app can
+ * get, operate, save it. Provide a sort comparator is easy to add any
+ * diary by the order of date.
  */
 public class DiaryLab {
     private static final String TAG = "DiaryLab";
     private static final String FIELNAME = "diary.json";
-    private static final String FLELTESTNAME = "diarytest8.json";
+    private static final String FLELTESTNAME = "diarytest11.json";
 
     private ArrayList<Diary> mDiaries;
     private DayGramJSONSerializer mDayGramJSONSerializer;
@@ -88,15 +91,19 @@ public class DiaryLab {
     }
 
     public DiaryLab getDiaryMonth(String year, String month) {
-        DiaryLab diaryMouth = null;
+        DiaryLab diaryMouth = new DiaryLab(mAppContext);
         boolean fBom = false;
         for (Diary d : mDiaries) {
-            if (fBom && !(d.getYear() == year && d.getMonth() == month))
+            if (fBom && !(d.getYear().equals(year)  && d.getMonth().equals(month) ))
                 return diaryMouth;
             if (d.getYear() == year && d.getMonth() == month) {
                 fBom = true;
                 diaryMouth.mDiaries.add(d);
             }
+        }
+        if (diaryMouth == null) {
+            diaryMouth = new DiaryLab(mAppContext);
+            return diaryMouth;
         }
         return diaryMouth;
     }

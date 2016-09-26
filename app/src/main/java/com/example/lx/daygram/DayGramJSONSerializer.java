@@ -21,6 +21,8 @@ import java.util.List;
 
 /**
  * Created by lx on 2016/9/23.
+ * class :JSONSerializer
+ * This class can save diaries or load diaries in the file named by mFilename.
  */
 public class DayGramJSONSerializer {
     private static final String TAG = "DayGramJSONSerializer";
@@ -55,9 +57,7 @@ public class DayGramJSONSerializer {
             for (int i = 0; i < array.length(); i++) {
                 Diary d = new Diary(array.getJSONObject(i));
                 if (d.getText() != null)
-                    diaries.add(new Diary(array.getJSONObject(i)));
-                else
-                    dots.add(new DiaryDot(array.getJSONObject(i)));
+                    diaries.add(d);
             }
         } catch (FileNotFoundException e) {
             //

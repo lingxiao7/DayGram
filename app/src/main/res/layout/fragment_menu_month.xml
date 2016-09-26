@@ -27,6 +27,7 @@
         android:id="@+id/menu_month_1"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_1_on"/>
@@ -34,6 +35,7 @@
         android:id="@+id/menu_month_2"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_2_on"/>
@@ -41,6 +43,7 @@
         android:id="@+id/menu_month_3"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_3_on"/>
@@ -48,6 +51,7 @@
         android:id="@+id/menu_month_4"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_4_on"/>
@@ -55,6 +59,7 @@
         android:id="@+id/menu_month_5"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_5_on"/>
@@ -62,6 +67,7 @@
         android:id="@+id/menu_month_6"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_6_on"/>
@@ -69,6 +75,7 @@
         android:id="@+id/menu_month_7"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_7_on"/>
@@ -76,6 +83,7 @@
         android:id="@+id/menu_month_8"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_8_on"/>
@@ -83,6 +91,7 @@
         android:id="@+id/menu_month_9"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_9_on"/>
@@ -90,6 +99,7 @@
         android:id="@+id/menu_month_10"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_10_on"/>
@@ -97,6 +107,7 @@
         android:id="@+id/menu_month_11"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_11_on"/>
@@ -104,6 +115,7 @@
         android:id="@+id/menu_month_12"
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@null"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/month_12_on"/>

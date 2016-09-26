@@ -10,6 +10,9 @@ import java.util.UUID;
 
 /**
  * Created by lx on 2016/9/22.
+ * The basic diary class. As you known, a diary has date, text and id.
+ * You can set and get them, and you can save on a DIY Structure. The
+ * casting between diary and json are also important.
  */
 public class Diary {
     private static final String JSON_ID = "id";

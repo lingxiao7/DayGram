@@ -16,8 +16,12 @@ import java.util.Date;
 
 /**
  * Created by lx on 2016/9/25.
+ * Main menu to change read view, add a new diary.
+ * The choice of month is not completed.
  */
 public class MenuFragment extends Fragment {
+    private static boolean sIsShow = false;
+
     private TextView mMonthTextView;
     private TextView mYearTextView;
     private ImageButton mNewImageButton;
@@ -32,7 +36,7 @@ public class MenuFragment extends Fragment {
         void onNewDiary(Diary diary);
         void onDiarySelectedMonth(String month);
         void onDiarySelectedYear(String year);
-        void onShowDiaries(String year, String month);
+        void onShowDiaries(String year, String month, boolean fg);
     }
 
     @Override
@@ -84,7 +88,10 @@ public class MenuFragment extends Fragment {
         mShowImageButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                mCallbacks.onShowDiaries(mYear, mMonth);
+
+                mCallbacks.onShowDiaries(mYear, mMonth, sIsShow);
+                if (!sIsShow) sIsShow = true;
+                else sIsShow = false;
             }
         });
 

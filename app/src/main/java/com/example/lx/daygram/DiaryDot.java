@@ -11,6 +11,8 @@ import java.util.UUID;
 
 /**
  * Created by lx on 2016/9/25.
+ * Simple class to stand for a dot with date. Provide setter
+ * and getter.
  */
 public class DiaryDot {
     private static final String JSON_DATE = "date";

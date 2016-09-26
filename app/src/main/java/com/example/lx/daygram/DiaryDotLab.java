@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * Created by lx on 2016/9/26.
+ * The lab of all dots. Like DiaryLab
  */
 public class DiaryDotLab {
     private ArrayList<DiaryDot> mDots;
@@ -51,15 +52,18 @@ public class DiaryDotLab {
     }
 
     public DiaryDotLab getDiaryDotMonth(String year, String month) {
-        DiaryDotLab dotMouth = null;
+        DiaryDotLab dotMouth = new DiaryDotLab(mAppContext);
         boolean fBom = false;
         for (DiaryDot d : mDots) {
-            if (fBom && !(d.getYear() == year && d.getMonth() == month))
+            if (fBom && !(d.getYear().equals(year)  && d.getMonth().equals(month) ))
                 return dotMouth;
-            if (d.getYear() == year && d.getMonth() == month) {
+            if (d.getYear() .equals(year)  && d.getMonth().equals(month) ) {
                 fBom = true;
                 dotMouth.mDots.add(d);
             }
+        }
+        if (dotMouth == null) {
+            return new DiaryDotLab(mAppContext);
         }
         return dotMouth;
     }

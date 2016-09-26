@@ -5,15 +5,24 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.format.DateFormat;
+
+import java.util.Date;
 
 /**
  * Created by lx on 2016/9/23.
+ * The diary list activity, the DiaryListFragment's container. Also has a menu,
+ * and override the implements of the menu to deal with some interaction.
  */
 public class DiaryListActivity extends SingleFragmentActivity implements MenuFragment.Callbacks{
 
     @Override
     protected Fragment createFragment() {
         return new DiaryListFragment();
+//        Date date = new Date();
+//        String year = DateFormat.format("yyyy", date).toString();
+//        String month = DateFormat.format("MM", date).toString();
+//        return DiaryListFragment.newInstance(year, month);
     }
 
     @Override
@@ -37,6 +46,20 @@ public class DiaryListActivity extends SingleFragmentActivity implements MenuFra
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            boolean isSave = data.getBooleanExtra(DiaryEditFragment.EXTRA_DIARY_SAVE, false);
+            if (isSave) {
+                Intent intent = getIntent();
+                overridePendingTransition(0, 0);
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
     public void onDiarySelectedYear(String year) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -50,16 +73,24 @@ public class DiaryListActivity extends SingleFragmentActivity implements MenuFra
     }
 
     @Override
-    public void onShowDiaries(String year, String month) {
+    public void onShowDiaries(String year, String month, boolean fg) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        Fragment oldFragment = fm.findFragmentById(R.id.fragmentListContainer);
-        Fragment newFragment = new DiaryDetailsListFragment();
+        //Fragment oldFragment = fm.findFragmentById(R.id.fragmentListContainer);
+        if (!fg) {
+            Fragment newFragment = new DiaryDetailsListFragment();
 
-        ft.replace(R.id.fragmentListContainer, newFragment);
-        ft.addToBackStack(null);
-        ft.commit();
+            ft.replace(R.id.fragmentListContainer, newFragment);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+        else {
+            Fragment newFragment = new DiaryListFragment();
 
+            ft.replace(R.id.fragmentListContainer, newFragment);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
     }
 }

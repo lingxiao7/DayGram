@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -32,14 +29,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * Created by lx on 2016/9/23.
+ * DiaryListFragment. As the name shown, the fragment manage the diary list.
+ * Click to edit and hold down to delete.
  */
 public class DiaryListFragment extends ListFragment{
     private static final String TAG = "DiaryListFragment";
+    public static final String EXTRA_DIARY_YEAR =
+            "com.example.lx.daygram.diary_year";
+    public static final String EXTRA_DIARY_MONTH =
+            "com.example.lx.daygram.diary_month";
+
 
     private ArrayList<Diary> mDiaries;
     private ArrayList<DiaryDot> mDots;
@@ -51,11 +56,14 @@ public class DiaryListFragment extends ListFragment{
         getActivity().setTitle(R.string.diaries_title);
         mDiaries = DiaryLab.get(getActivity()).getDiaries();
         mDots = DiaryDotLab.get(getActivity()).getDots();
+
+//        String year = (String)getArguments().getSerializable(EXTRA_DIARY_YEAR);
+//        String month = (String)getArguments().getSerializable(EXTRA_DIARY_MONTH);
+//        mDiaries = DiaryLab.get(getActivity()).getDiaryMonth(year, month).getDiaries();
+//        mDots = DiaryDotLab.get(getActivity()).getDiaryDotMonth(year, month).getDots();
+
         isNeedSaved = false;
-        /**ArrayAdapter<Diary> adapter =
-                new ArrayAdapter<Diary>(getActivity(),
-                        android.R.layout.simple_list_item_1,
-                        mDiaries);**/
+
         DiaryAdapter adapter = new DiaryAdapter(getActivity(), mDiaries, mDots);
         setListAdapter(adapter);
     }
@@ -140,10 +148,9 @@ public class DiaryListFragment extends ListFragment{
             Diary d = new Diary();
             d.setDate(((DiaryDot) o).getDate());
             mDiaries.add(d);
-            //DiaryLab.get(getActivity()).addDiary(d);
             Intent i = new Intent(getActivity(), DiaryPagerActivity.class);
             i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, ((DiaryDot) o).getDate());
-            startActivity(i);
+            startActivityForResult(i, 0);
         }
     }
 
@@ -247,14 +254,16 @@ public class DiaryListFragment extends ListFragment{
             switch (type) {
                 case TYPE_B:
                     DiaryDot dot = (DiaryDot) o;
-                    if (("Sunday") == DateFormat.format("EEEE", dot.getDate()).toString())
+                    if ("Sunday".equals(DateFormat.format("EEEE", dot.getDate()).toString()) )
                         holder2.dotImageView.setImageResource(R.drawable.add_red_dot_btn);
                     else holder2.dotImageView.setImageResource(R.drawable.add_dot_btn);
                     break;
                 case TYPE_A:
                     Diary diary = (Diary)o;
-                    holder1.dayTextView.setText((String)DateFormat.format("E", diary.getDate()));
-                    holder1.dateTextView.setText((String)DateFormat.format("d", diary.getDate()));
+                    if ("Sunday".equals(DateFormat.format("EEEE", diary.getDate()).toString()) )
+                        holder1.dateTextView.setTextColor(getResources().getColor(R.color.colorRed));
+                    holder1.dayTextView.setText(DateFormat.format("E", diary.getDate()));
+                    holder1.dateTextView.setText(DateFormat.format("d", diary.getDate()));
                     holder1.titleTextView.setText(diary.getTitle());
                     break;
             }
@@ -350,4 +359,16 @@ public class DiaryListFragment extends ListFragment{
         }
         return super.onContextItemSelected(item);
     }
+
+
+//    public static DiaryListFragment newInstance(String year,String month) {
+//        Bundle args = new Bundle();
+//        args.putSerializable(EXTRA_DIARY_YEAR, year);
+//        args.putSerializable(EXTRA_DIARY_YEAR, month);
+//
+//
+//        DiaryListFragment fragment = new DiaryListFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 }

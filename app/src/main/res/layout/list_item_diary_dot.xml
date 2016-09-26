@@ -2,11 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@null">
     <ImageView
         android:id="@+id/diary_list_item_dot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"/>
+        android:background="@null"
+        android:layout_marginBottom="4dp"
+        android:contentDescription="list_item_dot"/>
 </LinearLayout>

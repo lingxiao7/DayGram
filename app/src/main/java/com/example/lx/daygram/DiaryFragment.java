@@ -18,6 +18,7 @@ import android.view.View.OnClickListener;
 
 /**
  * Created by lx on 2016/9/23.
+ * Now it's abandoned. Substituted by DiaryEditFragment.
  */
 public class DiaryFragment extends Fragment implements OnClickListener {
     public static final String EXTRA_DIARY_DATE =

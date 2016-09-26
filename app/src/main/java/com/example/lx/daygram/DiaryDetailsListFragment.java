@@ -27,16 +27,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by lx on 2016/9/23.
+ * Class: DiaryDetailListFragment
+ * This is a Diray's details ListFragment. Show all Diary's details by order. Click
+ * any of these, you can edit on a DiaryEditFragment.
  */
 public class DiaryDetailsListFragment extends ListFragment {
     private static final String TAG = "DiaryListFragment";
+
 
     private ArrayList<Diary> mDiaries;
     private boolean isNeedSaved;
@@ -180,7 +181,9 @@ public class DiaryDetailsListFragment extends ListFragment {
                     .inflate(R.layout.list_item_diary_details, null);
             if (d != null) {
                 TextView textTextView = (TextView) convertView.findViewById(R.id.diary_details);
-                textTextView.setText(DateFormat.format("dd EEEE / ", d.getDate()).toString() + d.getText().toString());
+                String text = DateFormat.format("dd EEEE / ", d.getDate()).toString();
+                if (d.getText() != null) text += d.getText().toString();
+                textTextView.setText(text);
             }
             return convertView;
         }

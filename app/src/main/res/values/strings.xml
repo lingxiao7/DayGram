@@ -9,5 +9,6 @@
     <string name="diary_details_save">save</string>
     <string name="diary_details_home_button">home_button</string>
     <string name="diary_details_insert_time">insert_time</string>
-    <string name="diary_detials_date">FRIDAY/JULY 13/2016</string>
+    <string name="diary_detials_date">/JULY 13/2016</string>
+    <string name="diary_detials_day">MONDAY</string>
 </resources>

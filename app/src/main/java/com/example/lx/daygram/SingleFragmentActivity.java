@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 /**
  * Created by lx on 2016/9/23.
+ * The superclass of FragmentActivity.
  */
 
 

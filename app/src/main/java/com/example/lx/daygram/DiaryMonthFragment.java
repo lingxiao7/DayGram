@@ -13,6 +13,7 @@ import java.util.Date;
 
 /**
  * Created by lx on 2016/9/25.
+ * To be completed
  */
 public class DiaryMonthFragment extends FragmentActivity {
     private ViewPager mViewPager;
