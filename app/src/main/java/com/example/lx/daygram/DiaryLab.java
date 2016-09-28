@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -19,42 +20,34 @@ import java.util.UUID;
  */
 public class DiaryLab {
     private static final String TAG = "DiaryLab";
-    private static final String FIELNAME = "diary.json";
-    private static final String FLELTESTNAME = "diarytest11.json";
+    private String FILENAME = "diary.json";
+    private static final String FILEBASENAME = "diary";
 
     private ArrayList<Diary> mDiaries;
     private DayGramJSONSerializer mDayGramJSONSerializer;
 
     private static DiaryLab sDiaryLab;
+    private static int mMonth, mYear;
+    private static boolean isFileChanged = false;
     private Context mAppContext;
 
     private DiaryLab(Context appContext) {
         mAppContext = appContext;
-        mDayGramJSONSerializer = new DayGramJSONSerializer(mAppContext, FLELTESTNAME);
+        isFileChanged = false;
+        Calendar c = Calendar.getInstance();
+        if (mMonth == 0) mMonth = c.get(Calendar.MONTH)+1;
+        if (mYear == 0) mYear = c.get(Calendar.YEAR);
+
+        upDateFilename();
+        mDayGramJSONSerializer = new DayGramJSONSerializer(mAppContext, FILENAME);
         mDiaries = new ArrayList<Diary>();
 
         try {
             mDiaries = mDayGramJSONSerializer.loadDiaries();
         } catch (Exception e) {
             mDiaries = new ArrayList<Diary>();
-            Date todayDate = new Date();
-            for (Date i = new Date(110, 1, 0); i.compareTo(todayDate) < 0; i = new Date(i.getTime() + 24 * 60 * 60 * 1000)){
-                Diary d = new Diary();
-                d.setDate(i);
-                mDiaries.add(d);
-            }
         } finally {
             if (0 == mDiaries.size()) mDiaries = new ArrayList<Diary>();
-            /**
-            if (0 == mDiaries.size()) {
-                //mDiaries = new ArrayList<Diary>();
-                Date todayDate = new Date();
-                for (Date i = new Date(110, 1, 1); i.compareTo(todayDate) < 0; i = new Date(i.getTime() + 24 * 60 * 60 * 1000)){
-                    Diary d = new Diary();
-                    d.setDate(i);
-                    mDiaries.add(d);
-                }
-            }*/
         }
     }
 
@@ -71,8 +64,24 @@ public class DiaryLab {
     }
 
     public static DiaryLab get(Context c) {
-        if (sDiaryLab == null) sDiaryLab = new DiaryLab(c.getApplicationContext());
+        if (sDiaryLab == null || isFileChanged) sDiaryLab = new DiaryLab(c.getApplicationContext());
         return sDiaryLab;
+    }
+
+    public static int getMonth() {
+        return mMonth;
+    }
+
+    public static void setMonth(int mMonth) {
+        DiaryLab.mMonth = mMonth;
+    }
+
+    public static int getYear() {
+        return mYear;
+    }
+
+    public static void setYear(int mYear) {
+        DiaryLab.mYear = mYear;
     }
 
     public ArrayList<Diary> getDiaries() {
@@ -90,24 +99,6 @@ public class DiaryLab {
         return null;
     }
 
-    public DiaryLab getDiaryMonth(String year, String month) {
-        DiaryLab diaryMouth = new DiaryLab(mAppContext);
-        boolean fBom = false;
-        for (Diary d : mDiaries) {
-            if (fBom && !(d.getYear().equals(year)  && d.getMonth().equals(month) ))
-                return diaryMouth;
-            if (d.getYear() == year && d.getMonth() == month) {
-                fBom = true;
-                diaryMouth.mDiaries.add(d);
-            }
-        }
-        if (diaryMouth == null) {
-            diaryMouth = new DiaryLab(mAppContext);
-            return diaryMouth;
-        }
-        return diaryMouth;
-    }
-
     public boolean saveDiaries() {
         try {
             mDayGramJSONSerializer.saveDiaries(mDiaries);
@@ -117,5 +108,17 @@ public class DiaryLab {
             Log.e(TAG, "Error saving diaries: ", e);
             return false;
         }
+    }
+
+    public void upDateDiaryLab(int year, int month) {
+        if (year == mYear && month == mMonth) return;
+        mYear = year;
+        mMonth = month;
+        upDateFilename();
+        isFileChanged = true;
+    }
+
+    private void upDateFilename() {
+        FILENAME = FILEBASENAME + '_' + String.valueOf(mYear)  + '_' +  String.valueOf(mMonth) + ".json";
     }
 }

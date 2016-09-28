@@ -27,39 +27,12 @@ public class DiaryDot {
     public  DiaryDot() {
         mDate = new Date();
     }
-
-    /**
-    public int getImgRrcId() {
-        return mImgRrcId;
-    }
-
-    public void setImgRrcId(int imgRrcId) {
-        mImgRrcId = imgRrcId;
-    }
-
-     public Context getContext() {
-     return mContext;
-     }
-
-     public void setContext(Context context) {
-     mContext = context;
-     }*/
-
     public Date getDate() {
         return mDate;
     }
 
     public void setDate(Date date) {
         mDate = date;
-    }
-
-
-    public String getMonth() {
-        return DateFormat.format("M", mDate).toString();
-    }
-
-    public String getYear() {
-        return DateFormat.format("YYYY", mDate).toString();
     }
 
 }

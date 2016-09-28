@@ -16,16 +16,18 @@ public class DiaryDotLab {
 
     private static DiaryDotLab sDiaryDotLab;
     private Context mAppContext;
+    private static int mYear, mMonth;
 
     private DiaryDotLab(Context appContext) {
         mAppContext = appContext;
         mDots = new ArrayList<DiaryDot>();
         ArrayList<Diary> mDiaries = DiaryLab.get(appContext).getDiaries();
 
-        Date todayDate = new Date();
         int j = 0;
+        Date beginDate = new Date(mYear - 1900, mMonth - 1, 1);
+        Date endDate = new Date(mYear - 1900, mMonth , 1);
 
-        for (Date i = new Date(110, 1, 1); i.compareTo(todayDate) < 0; i = new Date(i.getTime() + 24 * 60 * 60 * 1000)){
+        for (Date i = beginDate; i.compareTo(endDate) < 0; i = new Date(i.getTime() + 24 * 60 * 60 * 1000)){
             DiaryDot dot = new DiaryDot();
             if (j >= mDiaries.size() || mDiaries.get(j).getDate().compareTo(i) != 0) {
                 dot.setDate(i);
@@ -35,8 +37,12 @@ public class DiaryDotLab {
         }
     }
 
-    public static DiaryDotLab get(Context c) {
-        if (sDiaryDotLab == null) sDiaryDotLab = new DiaryDotLab(c.getApplicationContext());
+    public static DiaryDotLab get(Context c, int year, int month) {
+        if (sDiaryDotLab == null || !(mYear == year && mMonth == month)) {
+            if (year != 0) mYear = year;
+            if (month != 0) mMonth = month;
+            sDiaryDotLab = new DiaryDotLab(c.getApplicationContext());
+        }
         return sDiaryDotLab;
     }
 
@@ -50,24 +56,6 @@ public class DiaryDotLab {
                 return dot;
         return null;
     }
-
-    public DiaryDotLab getDiaryDotMonth(String year, String month) {
-        DiaryDotLab dotMouth = new DiaryDotLab(mAppContext);
-        boolean fBom = false;
-        for (DiaryDot d : mDots) {
-            if (fBom && !(d.getYear().equals(year)  && d.getMonth().equals(month) ))
-                return dotMouth;
-            if (d.getYear() .equals(year)  && d.getMonth().equals(month) ) {
-                fBom = true;
-                dotMouth.mDots.add(d);
-            }
-        }
-        if (dotMouth == null) {
-            return new DiaryDotLab(mAppContext);
-        }
-        return dotMouth;
-    }
-
 
     public void deleteDiaryDot(DiaryDot dot) {
         mDots.remove(dot);

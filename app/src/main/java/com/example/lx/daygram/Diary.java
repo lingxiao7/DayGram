@@ -58,14 +58,6 @@ public class Diary {
         mDate = date;
     }
 
-    public String getMonth() {
-        return DateFormat.format("M", mDate).toString();
-    }
-
-    public String getYear() {
-        return DateFormat.format("YYYY", mDate).toString();
-    }
-
     public String getTitle() {
         String title = null;
         if (mText == null) return null;
