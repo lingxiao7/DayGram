@@ -54,8 +54,12 @@ public class DiaryListFragment extends ListFragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.diaries_title);
+
+        int year, month;
         mDiaries = DiaryLab.get(getActivity()).getDiaries();
-        mDots = DiaryDotLab.get(getActivity()).getDots();
+        year = DiaryLab.get(getActivity()).getYear();
+        month = DiaryLab.get(getActivity()).getMonth();
+        mDots = DiaryDotLab.get(getActivity(), year, month).getDots();
 
 //        String year = (String)getArguments().getSerializable(EXTRA_DIARY_YEAR);
 //        String month = (String)getArguments().getSerializable(EXTRA_DIARY_MONTH);
@@ -140,7 +144,6 @@ public class DiaryListFragment extends ListFragment{
             // Start DiaryPagerActivity
             Intent i = new Intent(getActivity(), DiaryPagerActivity.class);
             //i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
-            i.putExtra(DiaryFragment.EXTRA_DIARY_DATE, d.getDate());
             i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
             startActivity(i);
         }

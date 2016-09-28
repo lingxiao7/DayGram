@@ -47,7 +47,6 @@ public class DiaryPagerActivity extends FragmentActivity implements DiaryEditFra
                 }
                 else date = diary.getDate();
                 return DiaryEditFragment.newInstance(date);
-                //return DiaryFragment.newInstance(diary.getDate());
             }
 
             @Override

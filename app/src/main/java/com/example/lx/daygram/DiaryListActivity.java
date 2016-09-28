@@ -16,6 +16,11 @@ import java.util.Date;
  */
 public class DiaryListActivity extends SingleFragmentActivity implements MenuFragment.Callbacks{
 
+    public static final String EXTRA_DIARY_DATE_YEAR =
+            "com.example.lx.daygram.diary_year";
+    public static final String EXTRA_DIARY_DATE_MONTH =
+            "com.example.lx.daygram.diary_year";
+
     @Override
     protected Fragment createFragment() {
         return new DiaryListFragment();
@@ -28,21 +33,8 @@ public class DiaryListActivity extends SingleFragmentActivity implements MenuFra
     @Override
     public void onNewDiary(Diary diary) {
         Intent i = new Intent(this, DiaryPagerActivity.class);
-        i.putExtra(DiaryFragment.EXTRA_DIARY_DATE, diary.getDate());
+        i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, diary.getDate());
         startActivity(i);
-    }
-
-    @Override
-    public void onDiarySelectedMonth(String month) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        Fragment oldMenu = fm.findFragmentById(R.id.fragmentMenuContainer);
-        Fragment newMenu = MenuMonthFragment.newInstance(month);
-
-        ft.replace(R.id.fragmentMenuContainer, newMenu);
-        ft.addToBackStack(null);
-        ft.commit();
     }
 
     @Override
@@ -60,20 +52,7 @@ public class DiaryListActivity extends SingleFragmentActivity implements MenuFra
     }
 
     @Override
-    public void onDiarySelectedYear(String year) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        Fragment oldMenu = fm.findFragmentById(R.id.fragmentMenuContainer);
-        Fragment newMenu = MenuYearFragment.newInstance(year);
-
-        ft.replace(R.id.fragmentMenuContainer, newMenu);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-
-    @Override
-    public void onShowDiaries(String year, String month, boolean fg) {
+    public void onShowDiaries(boolean fg) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
@@ -92,5 +71,16 @@ public class DiaryListActivity extends SingleFragmentActivity implements MenuFra
             ft.addToBackStack(null);
             ft.commit();
         }
+    }
+
+    @Override
+    public void upDateActivity() {
+        Intent intent = getIntent();
+        intent.putExtra(EXTRA_DIARY_DATE_YEAR, DiaryLab.getYear());
+        intent.putExtra(EXTRA_DIARY_DATE_YEAR, DiaryLab.getYear());
+        overridePendingTransition(0, 0);
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(intent);
     }
 }

@@ -6,12 +6,16 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -22,21 +26,19 @@ import java.util.Date;
 public class MenuFragment extends Fragment {
     private static boolean sIsShow = false;
 
-    private TextView mMonthTextView;
-    private TextView mYearTextView;
     private ImageButton mNewImageButton;
     private ImageButton mShowImageButton;
 
-    private String mMonth;
-    private String mYear;
+
+    private int MonthNow;
+    private int YearNow;
 
     private Callbacks mCallbacks;
 
     public interface Callbacks {
         void onNewDiary(Diary diary);
-        void onDiarySelectedMonth(String month);
-        void onDiarySelectedYear(String year);
-        void onShowDiaries(String year, String month, boolean fg);
+        void onShowDiaries(boolean fg);
+        void upDateActivity();
     }
 
     @Override
@@ -56,22 +58,42 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
 
-        mMonthTextView = (TextView)v.findViewById(R.id.diary_list_menu_month);
-        mMonthTextView.setOnClickListener(new View.OnClickListener(){
+        Calendar c = Calendar.getInstance();
+
+        MonthNow = DiaryLab.getMonth();
+        YearNow = DiaryLab.getYear();
+        //spinner监听
+        final Spinner spinnerM = (Spinner) v.findViewById(R.id.spinner_month);
+        spinnerM.setSelection(MonthNow-1,true);
+        spinnerM.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                mCallbacks.onDiarySelectedMonth(mMonth);
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                MonthNow=pos+1;
+                DiaryLab.get(getActivity()).upDateDiaryLab(YearNow, MonthNow);
+                mCallbacks.upDateActivity();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
             }
         });
-
-        mYearTextView = (TextView)v.findViewById(R.id.diary_list_menu_year);
-        mYearTextView.setOnClickListener(new View.OnClickListener(){
+        final Spinner spinnerY = (Spinner) v.findViewById(R.id.spinner_year);
+        spinnerY.setSelection(YearNow-2012,true);
+        spinnerY.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                mCallbacks.onDiarySelectedYear(mYear);
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+
+                YearNow=pos+2012;
+                DiaryLab.get(getActivity()).upDateDiaryLab(YearNow, MonthNow);
+                mCallbacks.upDateActivity();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
             }
         });
-
 
         mNewImageButton = (ImageButton)v.findViewById(R.id.diary_list_menu_new);
         mNewImageButton.setOnClickListener(new View.OnClickListener(){
@@ -89,7 +111,7 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                mCallbacks.onShowDiaries(mYear, mMonth, sIsShow);
+                mCallbacks.onShowDiaries(sIsShow);
                 if (!sIsShow) sIsShow = true;
                 else sIsShow = false;
             }
@@ -97,6 +119,5 @@ public class MenuFragment extends Fragment {
 
 
         return v;
-        //return super.onCreateView(inflater, container, savedInstanceState);
     }
 }
