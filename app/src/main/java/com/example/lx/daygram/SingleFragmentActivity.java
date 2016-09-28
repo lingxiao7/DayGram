@@ -1,5 +1,6 @@
 package com.example.lx.daygram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,7 +25,7 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_fragment1);
+
         setContentView(getLayoutResId());
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragmentList = fm.findFragmentById(R.id.fragmentListContainer);

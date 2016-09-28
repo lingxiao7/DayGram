@@ -133,7 +133,6 @@ public class DiaryDetailsListFragment extends ListFragment {
         // Start DiaryPagerActivity
         Intent i = new Intent(getActivity(), DiaryPagerActivity.class);
         //i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
-        i.putExtra(DiaryFragment.EXTRA_DIARY_DATE, d.getDate());
         i.putExtra(DiaryEditFragment.EXTRA_DIARY_DATE, d.getDate());
         startActivity(i);
     }

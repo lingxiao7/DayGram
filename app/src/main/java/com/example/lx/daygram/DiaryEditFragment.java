@@ -159,7 +159,7 @@ public class DiaryEditFragment extends Fragment {
                 DiaryLab.get(getActivity()).sortDiary();
                 DiaryLab.get(getActivity()).saveDiaries();
 
-                DiaryDotLab dotLab = DiaryDotLab.get(getActivity());
+                DiaryDotLab dotLab = DiaryDotLab.get(getActivity(), 0, 0);
                 DiaryDot dot =  dotLab.getDot(mDiary.getDate());
                 dotLab.deleteDiaryDot(dot);
 
